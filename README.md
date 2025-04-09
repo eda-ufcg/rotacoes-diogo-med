@@ -1,8 +1,8 @@
 # Identificação
 
-* Nome: 
-* Email (@ccc): 
-* Matrícula: 
+* Nome: Diogo Medeiros
+* Email (@ccc): diogo.medeiros@ccc.ufcg.edu.br
+* Matrícula: 123110779
 
 # Roteiro: isAVL
 
