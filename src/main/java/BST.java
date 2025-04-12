@@ -8,30 +8,60 @@ public class BST {
     private int size;
 
     public boolean isAVL() {
-        //TODO: implementar
-        return false;
+    	boolean isavl = true;
+    	isAVL(root,isavl);
+    	return isavl;
+    }
+    private int isAVL(Node node,boolean value) {
+    	if (node == null) return -1;
+    	else {
+    		int left = isAVL(node.left,true);
+    		int right =  isAVL(node.right,true);
+    		if(Math.abs(left-right) > 1) value = false;
+    		if(left>right) {
+    			return 1+left;
+    		}
+    		else{
+    			return 1+right;
+    		}
+    		
+    	}
     }
 
     /**
      * Retorna a altura da árvore.
      */
-    public int height() {
-        //TODO implementar
-        return -1;
-    }
+//    public int height() {
+//        //TODO implementar
+//    	if (this.left == null && this.right == null) return 0;
+//        return -1;
+//    }
 
     /**
      * Retorna a altura de um determinado nó. Auxiliar
      * para recursão e para o balance.
      */
     private int height(Node node) {
-        return -1;
+    	if (node == null) return -1;
+    	else {
+    		int left = height(node.left);
+    		int right =  height(node.right);
+    		if(left>right) return 1+left;
+    		return 1+right;
+    	}
     }
 
     private int balance(Node node) {
-        return -1;
+    	int left;
+    	int right;
+    	if (node.left == null) left = (-1);
+    	else left = height(node.left);
+    	if(node.right == null) right = (-1);
+    	else right = height(node.right);
+        return left - right;
     }
 
+    
     /**
      * Busca o nó cujo valor é igual ao passado como parâmetro. Essa é a implementação 
      * iterativa clássica da busca binária em uma árvore binária de pesquisa.
@@ -76,6 +106,8 @@ public class BST {
                         Node newNode = new Node(element);
                         aux.left = newNode;
                         newNode.parent = aux;
+                        
+                        //rebalance(aux);
                         return;
                     }
                     
@@ -85,14 +117,62 @@ public class BST {
                         Node newNode = new Node(element);
                         aux.right = newNode;
                         newNode.parent = aux;
+                        
+                        //rebalance(aux);
                         return;
                     }
                     
                     aux = aux.right;
                 }
             }
+            
         }
         
+    }
+    
+    private void rebalance(Node aux) {
+    	Node auxP = aux.parent;
+    	int auxParentBalance = balance(auxP);
+    	if (Math.abs(auxParentBalance) >1 ) {
+    		int auxBalance = balance(aux);
+    		if(auxParentBalance<0 && auxBalance>0){
+    			rotacaoDir(aux);
+    			rotacaoEsq(auxP);
+    		}else if(auxParentBalance>0 && auxBalance<0){
+    			rotacaoEsq(aux);
+    			rotacaoDir(auxP);
+    		}else if(auxParentBalance<0) {
+    			rotacaoEsq(auxP);
+    		}else {
+            	rotacaoDir(auxP);
+            }
+    	}	
+    }
+    
+    private void rotacaoDir(Node x) {
+    	if (x.parent == null) ;
+    	else if(x == x.parent.left) {
+    		x.parent.left = x.left;
+    	}else if(x == x.parent.right) {
+    		x.parent.right = x.left;
+    	}
+    	x.left.parent = x.parent;
+    	x.parent = x.left;
+    	x.parent.right = x;    	
+    	x.left = null;
+    }
+    
+    private void rotacaoEsq(Node x) {
+    	if (x.parent == null) ;
+    	else if(x == x.parent.left) {
+    		x.parent.left = x.right;
+    	}else if(x == x.parent.right) {
+    		x.parent.right = x.right;
+    	}
+    	x.right.parent = x.parent;
+    	x.parent = x.right;
+    	x.parent.left = x;    	
+    	x.right = null;
     }
     
     
@@ -400,10 +480,12 @@ public class BST {
 
 class Node {
     
+	int height;
     int value;
     Node left;
     Node right;
     Node parent;
+    boolean black;
     
     Node(int v) {
         this.value = v;
